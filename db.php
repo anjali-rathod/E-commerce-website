@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Calcutta');
 function login($uid, $upd)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = "SELECT uid FROM credentials WHERE uid = :uid and upd = :upd ";
     $stmt=$pdo->prepare($sql);
     $stmt->execute(array(':uid'=>$uid,':upd'=>sha1($upd)));
@@ -18,7 +18,7 @@ function login($uid, $upd)
 function admin($uid)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = "SELECT admin FROM credentials WHERE uid='". $uid."'";
     $stmt=$pdo->query($sql);
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -29,7 +29,7 @@ function admin($uid)
 function uno($uid)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = "SELECT uno FROM credentials WHERE uid='". $uid."'";
     $stmt=$pdo->query($sql);
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -40,7 +40,7 @@ function uno($uid)
 function sign_up($name,$email,$uid, $upd,$phno,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT * FROM credentials where uid="'. $uid.'"');
     $hashedpassword = sha1($upd);
     if ($row=$stmt2->fetch(PDO::FETCH_ASSOC))
@@ -65,7 +65,7 @@ function sign_up($name,$email,$uid, $upd,$phno,$address)
 /*ALL-Products*/
 function disp_all_products()
 {    
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT * FROM product');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -78,7 +78,7 @@ function disp_all_products()
 function disp_account_orders($uno)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT ono, odate, totalamt,quantity,status FROM orders where uno="'. $uno.'" ORDER BY odate DESC');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -102,7 +102,7 @@ function disp_account_orders($uno)
 /*Soap Information Update*/
 function soap_info()
 {
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT * FROM product');
     echo "<table>";
     echo "<tr>";
@@ -197,7 +197,7 @@ function soap_info()
 /*Updating soap info*/
 function updating_soap_info($pid,$pname,$price,$quantity,$descp)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql='UPDATE product SET pname=?,price=?,quantity=?,descp=? where pid=?';
 
     $stmt = $pdo->prepare($sql);
@@ -216,7 +216,7 @@ function updating_soap_info($pid,$pname,$price,$quantity,$descp)
 function view_post($pid)
 {
      
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT * FROM product where pid="'.$pid.'"');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -339,7 +339,7 @@ function entry()
 function creating($pname,$price,$quantity,$descp)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = 'INSERT INTO product (pname,price,quantity,descp) VALUES ("'.$pname.'","'.$price.'", "'.$quantity.'","'.$descp.'")';
     if ($pdo->query($sql) === FALSE) 
     {
@@ -358,7 +358,7 @@ function creating($pname,$price,$quantity,$descp)
 function updating_user_info($uno,$uid,$upd,$name,$admin,$email,$phone,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql='UPDATE credentials SET upd=?,name=?,admin=?,email=?,phone=?,address=? where uno=?';
     $stmt = $pdo->prepare($sql);
     if ($stmt->execute([$upd,$name,$admin,$email,$phone,$address,$uno]) === TRUE )
@@ -374,7 +374,7 @@ function updating_user_info($uno,$uid,$upd,$name,$admin,$email,$phone,$address)
 function updating_no_pass_info($uno,$uid,$name,$admin,$email,$phone,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql='UPDATE credentials SET name=?,admin=?,email=?,phone=?,address=? where uno=?';
     $stmt = $pdo->prepare($sql);
     if ($stmt->execute([$name,$admin,$email,$phone,$address,$uno]) === TRUE )
@@ -392,7 +392,7 @@ function updating_no_pass_info($uno,$uid,$name,$admin,$email,$phone,$address)
 function delete_soap_info($pid)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('DELETE FROM product where pid='. $pid);
     $row=$stmt2->fetch(PDO::FETCH_ASSOC);
     echo "<p id='g'>User deleted successfully . Please refresh!<p>";
@@ -402,7 +402,7 @@ function delete_soap_info($pid)
 function personal_info($uid,$uno)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT uno,uid,name,admin, email,phone,address FROM credentials where uno="'.$uno.'"');
     $ad="";
     echo "<table>";
@@ -463,7 +463,7 @@ function personal_info($uid,$uno)
 /*News-letter Sign-up*/
 function newsletter($uno)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = "SELECT news FROM credentials WHERE uno='". $uno."'";
     $stmt=$pdo->query($sql);
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -510,7 +510,7 @@ function quiz($q1,$q2,$q4)
             array_push($pid, "1","2");
         }
     }
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $p=implode(",",$pid);
     $stmt2 = $pdo->query('SELECT * FROM product where pid in ('.$p.')');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
@@ -524,7 +524,7 @@ function quiz($q1,$q2,$q4)
 /* Cart */
 function cart($uno,$uid)
 {
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $stmt2 = $pdo->query('SELECT * FROM cart where uno="'.$uno.'"');
     $total=0;
     echo "<table>";
@@ -562,7 +562,7 @@ function cart($uno,$uid)
 /*Receipt*/
 function receipt($total,$qty,$uno,$uid,$coupon)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     if (($uid == $coupon))
     {
         echo "You cannot use your own coupon!!";
@@ -597,7 +597,7 @@ function receipt($total,$qty,$uno,$uid,$coupon)
 /*update-orders*/
 function update_order()
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
     $sql = "SELECT * FROM orders";
     $stmt=$pdo->query($sql);
     echo "<table>";
