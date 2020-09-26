@@ -10,7 +10,6 @@
 
 		<div class="content">
 			<img src="static/images/top.jpg" id="about" />
-			<h2>Srika </h2>	
 			<p>Srika is a handmade soap company that offes varieties of soaps<br>
 			With the combination of rich and pure base and the goodness of <br> essential oils. Srika soaps offers you a luxurious experience <br>
 			and a beautiful and healthy skin. . .  <br><br>Handmade soaps have low ratio of chemicals and proves to soothe your skin.

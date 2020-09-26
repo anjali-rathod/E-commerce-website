@@ -29,9 +29,9 @@ if (isset($_SESSION['uid']))
 		<div class="content">
 			<div class="login_div">
 				<form method="post" >
-					<h2>Sign Up</h2>
+					<h2>Sign Up</h2><hr>
 					<input type="text" name="name" placeholder="Full Name" required><br>
-					<input type="text" name="email" placeholder="Email" required><br>
+					<input type="email" name="email" placeholder="Email" required><br>
 					<input type="text" name="uid" placeholder="Username" required><br>
 					<input type="password" name="upd"  placeholder="Password" required><br> 
 					<input type="number" name="phno"  placeholder="Phone Number" required><br> 

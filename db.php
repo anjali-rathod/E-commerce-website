@@ -7,40 +7,19 @@ date_default_timezone_set('Asia/Calcutta');
 function login($uid, $upd)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
-    $sql = "SELECT uid FROM credentials WHERE uid = :uid and upd = :upd ";
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $sql = "SELECT * FROM credentials WHERE uid = :uid and upd = :upd ";
     $stmt=$pdo->prepare($sql);
     $stmt->execute(array(':uid'=>$uid,':upd'=>sha1($upd)));
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
     return $row;
-}
-/*Admin check*/
-function admin($uid)
-{
-     
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
-    $sql = "SELECT admin FROM credentials WHERE uid='". $uid."'";
-    $stmt=$pdo->query($sql);
-    $row=$stmt->fetch(PDO::FETCH_ASSOC);
-    return $row["admin"];
-}
-
-/*uno*/
-function uno($uid)
-{
-     
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
-    $sql = "SELECT uno FROM credentials WHERE uid='". $uid."'";
-    $stmt=$pdo->query($sql);
-    $row=$stmt->fetch(PDO::FETCH_ASSOC);
-    return $row["uno"];
 }
 
 /*SIGN-UP*/
 function sign_up($name,$email,$uid, $upd,$phno,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT * FROM credentials where uid="'. $uid.'"');
     $hashedpassword = sha1($upd);
     if ($row=$stmt2->fetch(PDO::FETCH_ASSOC))
@@ -65,7 +44,7 @@ function sign_up($name,$email,$uid, $upd,$phno,$address)
 /*ALL-Products*/
 function disp_all_products()
 {    
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT * FROM product');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -78,7 +57,7 @@ function disp_all_products()
 function disp_account_orders($uno)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT ono, odate, totalamt,quantity,status FROM orders where uno="'. $uno.'" ORDER BY odate DESC');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -89,6 +68,10 @@ function disp_account_orders($uno)
             if ($row["status"]=="no")
             {
                 echo '<p id="e">STATUS = NOT APPROVED<p>';
+                echo '<form method="post">';
+                echo '<input type="hidden" name="ono" value="'.$row["ono"].'">';
+                echo '<button type="submit" name="delete">Delete order</button>';
+                echo '</form>';
             }
             else
             {
@@ -97,12 +80,18 @@ function disp_account_orders($uno)
             echo '<hr>'; 
 
     }
+    if (isset($_POST["delete"]))
+    {
+        $stmt = $pdo->query('DELETE FROM orders where ono='. $_POST["ono"]);
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+        echo '<p id="g">Order deleted . Please refresh!<p>';
+    }
 }  
 
 /*Soap Information Update*/
 function soap_info()
 {
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT * FROM product');
     echo "<table>";
     echo "<tr>";
@@ -136,7 +125,7 @@ function soap_info()
     echo "<a href='account.php'> Back </a>";
     if (isset($_POST["update_button"]))
     {
-        if (isset($_POST["img"]))
+        if (empty($_FILES["img"]))
         {
             $file=$_FILES["img"];
             $filename=$_FILES["img"]["name"];
@@ -197,7 +186,7 @@ function soap_info()
 /*Updating soap info*/
 function updating_soap_info($pid,$pname,$price,$quantity,$descp)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql='UPDATE product SET pname=?,price=?,quantity=?,descp=? where pid=?';
 
     $stmt = $pdo->prepare($sql);
@@ -216,7 +205,7 @@ function updating_soap_info($pid,$pname,$price,$quantity,$descp)
 function view_post($pid)
 {
      
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT * FROM product where pid="'.$pid.'"');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
@@ -224,14 +213,6 @@ function view_post($pid)
         echo '<h1 id="soaps">'.$row['pname'].'</h1><hr>';
         echo '<img id="soaps" src="data:image;base64,'.base64_encode($row['img']).'"/>'; 
         echo '<p>'.$row['descp'].'</p>';   
-        if ($row['quantity']<5)
-        {
-            echo '<p id="e">Quantity left='.$row['quantity'].'</p>'; 
-        }  
-        else
-        {
-            echo '<p>Quantity left='.$row['quantity'].'</p>'; 
-        }
         echo '<span id="rs">R'.$row['price'].'</span><br>';   
         echo '<form method="post">' ;
         echo '<input type="hidden" name="price" value="'.$row['price'].'">';
@@ -266,7 +247,7 @@ function view_post($pid)
 /*Create Soap Entry*/
 function entry()
 {
-     
+     $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     echo '<h1>Enter soap details . .</h1>';
     echo '<form method="post" enctype="multipart/form-data">';
     echo '<input type="text" name="pname" placeholder="Enter soap name here" required/>';
@@ -280,8 +261,9 @@ function entry()
 
     if (isset($_POST['create_button']))
     {
-        if (isset($_POST["img"]))
+        if (isset($_FILES["img"]))
         {
+            echo "here";
             $file=$_FILES["img"];
             $filename=$_FILES["img"]["name"];
             $fileTmpName=$_FILES["img"]["tmp_name"];
@@ -298,12 +280,14 @@ function entry()
                 {
                     if ($fileSize<2000000) 
                     {
-                        $pid=creating($_POST["pname"],$_POST["price"],$_POST["quantity"],$_POST["descp"]);
                         try
                         {
-                           $stmt = $pdo->prepare("UPDATE product SET img=? where pid=?");
-                           $stmt->bindParam(1, $fp, PDO::PARAM_LOB);
-                           $stmt->bindParam(2, $pid, PDO::PARAM_INT);
+                           $stmt = $pdo->prepare("INSERT into product (pname,price,quantity,descp,img) values (?,?,?,?,?)");
+                           $stmt->bindParam(1, $_POST["pname"], PDO::PARAM_STR);
+                           $stmt->bindParam(2, $_POST["price"], PDO::PARAM_INT);
+                           $stmt->bindParam(3, $_POST["quantity"], PDO::PARAM_INT);
+                           $stmt->bindParam(4, $_POST["descp"], PDO::PARAM_STR);
+                           $stmt->bindParam(5, $fp, PDO::PARAM_LOB);
                            $pdo->errorInfo();
                            $stmt->execute();
                         }
@@ -330,7 +314,7 @@ function entry()
         else
         {
             echo "<p id='e'>Enter image also!!</p>";
-            var_dump($_POST);
+            var_dump($_FILES);
         }
     }
 }
@@ -339,7 +323,7 @@ function entry()
 function creating($pname,$price,$quantity,$descp)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql = 'INSERT INTO product (pname,price,quantity,descp) VALUES ("'.$pname.'","'.$price.'", "'.$quantity.'","'.$descp.'")';
     if ($pdo->query($sql) === FALSE) 
     {
@@ -358,7 +342,7 @@ function creating($pname,$price,$quantity,$descp)
 function updating_user_info($uno,$uid,$upd,$name,$admin,$email,$phone,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql='UPDATE credentials SET upd=?,name=?,admin=?,email=?,phone=?,address=? where uno=?';
     $stmt = $pdo->prepare($sql);
     if ($stmt->execute([$upd,$name,$admin,$email,$phone,$address,$uno]) === TRUE )
@@ -374,7 +358,7 @@ function updating_user_info($uno,$uid,$upd,$name,$admin,$email,$phone,$address)
 function updating_no_pass_info($uno,$uid,$name,$admin,$email,$phone,$address)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql='UPDATE credentials SET name=?,admin=?,email=?,phone=?,address=? where uno=?';
     $stmt = $pdo->prepare($sql);
     if ($stmt->execute([$name,$admin,$email,$phone,$address,$uno]) === TRUE )
@@ -392,7 +376,7 @@ function updating_no_pass_info($uno,$uid,$name,$admin,$email,$phone,$address)
 function delete_soap_info($pid)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('DELETE FROM product where pid='. $pid);
     $row=$stmt2->fetch(PDO::FETCH_ASSOC);
     echo "<p id='g'>User deleted successfully . Please refresh!<p>";
@@ -402,7 +386,7 @@ function delete_soap_info($pid)
 function personal_info($uid,$uno)
 {
      
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT uno,uid,name,admin, email,phone,address FROM credentials where uno="'.$uno.'"');
     $ad="";
     echo "<table>";
@@ -463,7 +447,7 @@ function personal_info($uid,$uno)
 /*News-letter Sign-up*/
 function newsletter($uno)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql = "SELECT news FROM credentials WHERE uno='". $uno."'";
     $stmt=$pdo->query($sql);
     $row=$stmt->fetch(PDO::FETCH_ASSOC);
@@ -510,7 +494,7 @@ function quiz($q1,$q2,$q4)
             array_push($pid, "1","2");
         }
     }
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $p=implode(",",$pid);
     $stmt2 = $pdo->query('SELECT * FROM product where pid in ('.$p.')');
     while($row=$stmt2->fetch(PDO::FETCH_ASSOC))
@@ -524,7 +508,7 @@ function quiz($q1,$q2,$q4)
 /* Cart */
 function cart($uno,$uid)
 {
-    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $stmt2 = $pdo->query('SELECT * FROM cart where uno="'.$uno.'"');
     $total=0;
     echo "<table>";
@@ -533,36 +517,58 @@ function cart($uno,$uid)
     echo "<th>Product price</th>";
     echo "<th>Quantity</th>";
     echo "<th>Total Price</th>";
+    echo "<th>Update Quantity</th>";
+    echo "<th>Delete Product</th>";
     echo "</tr>";
     $qty=0;
     while ($row=$stmt2->fetch(PDO::FETCH_ASSOC))
     {
         echo "<tr>";
-        echo '<td>'.$row["pname"].'</td>';
-        echo '<td>'.$row["price"].'</td>';
-        echo '<td>'.$row['quantity'].'</td>';
-        echo '<td>'.$row["total"].'</td>';
+        echo '<form method= "post">';
+        echo '<td><input type="text" value="'.$row['pname'].'" name="pname" readonly></input></td>';
+        echo '<td><input type="text" value="'.$row['price'].'" name="price" readonly></td>';
+        echo '<td><input type="number" value="'.$row['quantity'].'" name="qty"></input></td>';
+        echo '<td>'.$row['total'].'</input></td>';
+        echo '<td><button type="submit" name="update">Update</button></td>';
+        echo '<td><button type="submit" name="delete">Delete</button></td>';
         echo "</tr>"; 
         $qty=$qty+(int)$row["quantity"];
         $total=$total+(int)$row["total"];
     }     
     echo "</table>";
-    echo "<br>";
+    echo "<br><br>";
     echo "Total amount=  ".$total;
     echo '<form method="post">';
-    echo '<input type="text" placeholder="Coupon code?" name="coupon"/>';
+    echo '<br><input type="text" placeholder="Coupon code?" name="coupon"/>';
     echo '<button name="place"> Place Order</button>';
     echo '</form>';
     if (isset($_POST["place"]))
     {
             receipt($total,$qty,$uno,$uid,$_POST["coupon"]);
     }
+    if (isset($_POST["update"]))
+    {
+        $t=(int)$_POST["qty"]*(int)$_POST["price"];
+        $sql='UPDATE cart SET quantity=?,total=? where pname=?';
+        $stmt = $pdo->prepare($sql);
+        if ($stmt->execute([$_POST["qty"],$t,$_POST["pname"]]) === TRUE )
+        {
+            echo "<p id='g'>Information Update successful. Please refresh !<p>";
+        }
+    }
+    if (isset($_POST["delete"]))
+    {
+        $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+        $stmt2 = $pdo->query('DELETE FROM cart where pname="'.$_POST["pname"].'" and quantity="'.$_POST["qty"].'"');
+        $row=$stmt2->fetch(PDO::FETCH_ASSOC);
+        echo "<p id='g'>Product deleted successfully . Please refresh!<p>";
+    }
 }
 
 /*Receipt*/
 function receipt($total,$qty,$uno,$uid,$coupon)
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     if (($uid == $coupon))
     {
         echo "You cannot use your own coupon!!";
@@ -597,7 +603,7 @@ function receipt($total,$qty,$uno,$uid,$coupon)
 /*update-orders*/
 function update_order()
 {
-    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=databasename', 'id', 'password');
+    $pdo=new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
     $sql = "SELECT * FROM orders";
     $stmt=$pdo->query($sql);
     echo "<table>";
@@ -626,6 +632,7 @@ function update_order()
         echo "</tr>"; 
         echo '</form>';
     }
+    echo "</table>";
     if (isset($_POST["update_button"]))
     {
         $sql='UPDATE orders SET status=? where ono=?';
@@ -638,5 +645,36 @@ function update_order()
         {
             echo "<p id='e'>Information Update unsuccessful. Try Again !<p>";
         }
+    }
+}
+
+/*Add Customize soap to cart*/
+function customize($uno,$q1,$q2,$q3,$q4)
+{
+      $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+      $sql = 'INSERT INTO cart (uno,pid,pname,quantity,price,total) VALUES ("'.$uno.'","10","'.$q1.$q2.$q3.$q4.'", "1","150","150")';
+      if ($pdo->query($sql) === FALSE) 
+      {
+          echo "<br >Error <br>";
+      }
+      else
+      {
+          echo "<p id='g'>Product added successfully. Check in cart !<p>";
+      }
+}
+
+/*Forgot Password*/
+function forgot($uid,$email,$upd)
+{
+    $pdo= new PDO('mysql:host=localhost;port=3307;dbname=srika', 'anjali', 'ctc');
+    $sql='UPDATE credentials SET upd=? where uid=? and email=? ';
+    $stmt = $pdo->prepare($sql);
+    if ($stmt->execute([sha1($upd),$uid,$email]) === TRUE )
+    {
+        echo "<p id='g'>Information Update successful. Please re-login !<p>";
+    }
+    else
+    {
+        echo "<p id='e'>Information Update unsuccessful. Try Again !<p>";
     }
 }

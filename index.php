@@ -40,7 +40,6 @@
 					<h2>Login</h2>
 					<br>
 					<?php
-
 						if(isset($_SESSION["error"]))
 						{
 							echo('<p id="e">'.$_SESSION["error"]."</p>\n");
@@ -56,7 +55,9 @@
 					<input type="password" name="upd"  placeholder="Password" required><br> 
 					<label><b>Remember me </b></label><input type="checkbox" name="remember" id="remember"/>
 					<button class="btn" type="submit" name="login_btn">Sign in</button>
+					<br>
 				</form>
+				<a href="forgot.php" class="acc">Forgot Password?</a>
 				<?php
 					ini_set("display_errors", 1);
 					error_reporting(E_ALL);
@@ -72,14 +73,14 @@
 						else
 						{
 							$_SESSION["uid"]=$_POST['uid'];
-							$_SESSION["admin"]=admin($_SESSION["uid"]);
-							$_SESSION["uno"]=uno($_SESSION["uid"]);
+							$_SESSION["admin"]=$row["admin"];
+							$_SESSION["uno"]=$row["uno"];
 							$_SESSION["success"]="Login success";
 							$_SESSION["logged_in"]="pass";
 							if (!empty($_POST['remember']))
 							{
 								setcookie ("uid", $_POST['uid'], time()+ (10 * 365 * 24 * 60 * 60));
-								setcookie ("admin", $_POST['admin'], time()+ (10 * 365 * 24 * 60 * 60));
+								setcookie ("admin", $_SESSION['admin'], time()+ (10 * 365 * 24 * 60 * 60));
 							}
 							header("LOCATION: account.php");
 						}

@@ -24,8 +24,16 @@
 				</p>
 			</div>
 			<div class="account">
-				<h2 class="acc">Hi <?php echo $_SESSION["uid"] ?> </h2>
-				<a class="acc" href="createblog.php">Create a blog</a>
+				<h2 class="acc">Hi <?php echo $_SESSION["uid"] ?> ,Your Promo code is &nbsp; <u><?php echo $_SESSION["uid"] ?></u></h2>
+				<?php
+				 if($_SESSION["admin"]=="yes")
+				 {
+				 	echo '<a class="acc" href="updateorders.php">Update Order Status</a>';
+				 	echo '<a class="acc" href="add.php">Add Soap</a>';
+				 	echo '<a class="acc" href="soapinfo.php">Update Soaps Information<br></a>';
+				 }
+				 ?>
+				 <a class="acc" href="account.php">Back</a>
 				<a class="acc" href="logout.php">LOGOUT</a>
 			</div>
 		</div>

@@ -36,7 +36,6 @@
 			</div>
 			<div class="account">
 				<h2 class="acc">Hi <?php echo $_SESSION["uid"] ?> ,Your Promo code is &nbsp; <u><?php echo $_SESSION["uid"] ?></u></h2>
-				<a class="acc" href="orderplaced.php">Place order</a>
 				<?php
 				 if($_SESSION["admin"]=="yes")
 				 {
@@ -45,13 +44,14 @@
 				 }
 				 ?>
 				 <a class="acc" href="personal.php">Update Personal Information</a>
+				 <a class="acc" href="account.php">Back</a>
 				<a class="acc" href="logout.php">LOGOUT</a>
 			</div>
 		</div>
 
 		<!-- Page content -->
 		<div class="content">
-			<h2 class="content-title"> In your cart</h2>
+			<h2 class="content-title"> All Orders Placed</h2>
 
 			<hr>
 			<?php	

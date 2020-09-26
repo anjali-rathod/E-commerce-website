@@ -35,9 +35,9 @@
 			</div>
 			<div class="account">
 				<h2 class="acc">Hi <?php echo $_SESSION["uid"] ?> ,Your Promo code is &nbsp; <u><?php echo $_SESSION["uid"] ?></u></h2>
-				<a class="acc" href="cart.php">Your Cart</a>
 				<a class="acc" href="soapinfo.php">Update Soaps Information<br></a>
 				 <a class="acc" href="personal.php">Update Personal Information</a>
+				 <a class="acc" href="account.php">Back</a>
 				<a class="acc" href="logout.php">LOGOUT</a>
 			</div>
 		</div>
